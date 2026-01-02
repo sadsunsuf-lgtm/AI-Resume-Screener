@@ -1,4 +1,0 @@
-google-genai
-pypdf
-python-dotenv
-streamlit
