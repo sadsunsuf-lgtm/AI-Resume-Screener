@@ -91,3 +91,40 @@ if st.button("🚀 Process & Rank Candidates"):
             st.download_button("📥 Export CSV", data=csv, file_name="rankings.csv")
     else:
         st.warning("Please fill all inputs.")
+
+# --- IMPROVED RETRY LOGIC (Longer waits for Free Tier) ---
+@retry(
+    wait=wait_exponential(multiplier=2, min=10, max=120), # Wait longer: 10s, 20s, 40s...
+    stop=stop_after_attempt(3) # Try 3 times per resume
+)
+def safe_ai_call(prompt):
+    return client.models.generate_content(model="gemini-flash-latest", contents=prompt)
+
+# ... (Inside your Process button logic) ...
+
+for i, file in enumerate(uploaded_files):
+            # ... (file saving logic) ...
+            try:
+                # Add a manual 5-second sleep BEFORE each call to stay under the per-minute limit
+                time.sleep(5) 
+                
+                response = safe_ai_call(prompt)
+                # ... (json parsing logic) ...
+                
+            except Exception as e:
+                # Instead of crashing, we just skip this one resume if it truly fails
+                st.warning(f"Could not process {file.name} due to API limits. Skipping...")
+                continue 
+
+        # ... (Display Table) ...
+
+        # --- PROTECT THE MEMO SECTION ---
+st.divider()
+st.subheader("📝 AI Executive Memo")
+try:
+            with st.spinner("Writing hiring memo..."):
+                memo_prompt = f"Write a brief hiring memo for: {df.head(3).to_dict()}"
+                memo_res = safe_ai_call(memo_prompt)
+                st.info(memo_res.text)
+except Exception:
+            st.error("The Leaderboard is ready, but the AI is too busy to write the memo right now. Please try clicking the button again in 1 minute.")
