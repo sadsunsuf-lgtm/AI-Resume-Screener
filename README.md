@@ -17,12 +17,5 @@ An intelligent recruitment tool that uses Large Language Models (LLMs) to automa
 - **AI Engine:** Google GenAI (Gemini)
 - **Data Handling:** Pandas
 - **Logic:** Python, Tenacity (Retry Logic)
-
-## ⚙️ Installation & Setup
-1. Clone the repo: `git clone https://github.com/sadsunsuf-lgtm/AI-Resume-Screener.git`
-2. Install requirements: `pip install -r requirements.txt`
-3. Create a `.env` file and add your `GOOGLE_API_KEY`.
-4. Run the app: `streamlit run main.py`
-
 ---
 *Developed by [Sana Nasir](https://www.linkedin.com/in/sana-nasir-521937316/)*
